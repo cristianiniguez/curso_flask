@@ -1,13 +1,10 @@
-from flask import Flask, request, make_response, redirect, render_template, session, url_for, flash
-from flask.helpers import url_for
+from flask import request, make_response, redirect, render_template, session
 import unittest
 
 from app import create_app
-from app.forms import LoginForm
+from app.firestore_service import get_users, get_todos
 
 app = create_app()
-
-todos = ['Comprar café', 'Enviar una solicitud de compra', 'Entregar video a productor']
 
 
 @app.cli.command()
@@ -41,8 +38,13 @@ def hello():
 
     context = {
         'user_ip': user_ip,
-        'todos': todos,
+        'todos': get_todos(user_id=username),
         'username': username
     }
+
+    users = get_users()
+
+    for user in users:
+        print(user)
 
     return render_template('hello.html', **context)
