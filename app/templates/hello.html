@@ -30,7 +30,7 @@
 
     <ul class="list-group">
       {% for todo in todos %}
-        {{macros.render_todo(todo, delete_todo_form)}}
+        {{macros.render_todo(todo, delete_todo_form, update_todo_form)}}
       {% endfor %}
     </ul>
   </div>

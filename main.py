@@ -4,8 +4,8 @@ from flask_login import login_required, current_user
 import unittest
 
 from app import create_app
-from app.forms import TodoForm, DeleteTodoForm
-from app.firestore_service import get_user, get_todos, create_todo, delete_todo
+from app.forms import TodoForm, DeleteTodoForm, UpdateTodoForm
+from app.firestore_service import get_user, get_todos, create_todo, delete_todo, update_todo
 
 app = create_app()
 
@@ -44,6 +44,7 @@ def hello():
 
     todo_form = TodoForm()
     delete_todo_form = DeleteTodoForm()
+    update_todo_form = UpdateTodoForm()
 
     context = {
         'user_ip': user_ip,
@@ -51,6 +52,7 @@ def hello():
         'username': username,
         'todo_form': todo_form,
         'delete_todo_form': delete_todo_form,
+        'update_todo_form': update_todo_form,
     }
 
     if todo_form.validate_on_submit():
@@ -65,4 +67,11 @@ def hello():
 def delete(id):
     user_id = current_user.id
     delete_todo(user_id=user_id, todo_id=id)
+    return redirect(url_for('hello'))
+
+
+@app.route('/todo/update/<id>/<int:done>', methods=['POST'])
+def update(id, done):
+    user_id = current_user.id
+    update_todo(user_id=user_id, todo_id=id, done=done)
     return redirect(url_for('hello'))

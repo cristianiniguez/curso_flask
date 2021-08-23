@@ -39,3 +39,8 @@ def create_todo(user_id, description):
 def delete_todo(user_id, todo_id):
     todo_ref = db.document(f'user/{user_id}/todo/{todo_id}')
     todo_ref.delete()
+
+
+def update_todo(user_id, todo_id, done):
+    todo_ref = db.document(f'user/{user_id}/todo/{todo_id}')
+    todo_ref.update({'done': not bool(done)})
