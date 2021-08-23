@@ -1,4 +1,5 @@
 from flask import request, make_response, redirect, render_template, session
+from flask_login import login_required
 import unittest
 
 from app import create_app
@@ -32,6 +33,7 @@ def index():
 
 
 @app.route('/hello', methods=['GET'])
+@login_required
 def hello():
     user_ip = session.get('user_ip')
     username = session.get('username')
@@ -41,10 +43,5 @@ def hello():
         'todos': get_todos(user_id=username),
         'username': username
     }
-
-    users = get_users()
-
-    for user in users:
-        print(user)
 
     return render_template('hello.html', **context)

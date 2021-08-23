@@ -12,5 +12,9 @@ def get_users():
     return db.collection('user').get()
 
 
+def get_user(user_id):
+    return db.collection('user').document(user_id).get()
+
+
 def get_todos(user_id):
     return db.collection('user').document(user_id).collection('todo').get()
