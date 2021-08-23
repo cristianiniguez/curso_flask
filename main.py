@@ -1,9 +1,9 @@
 from flask import request, make_response, redirect, render_template, session
-from flask_login import login_required
+from flask_login import login_required, current_user
 import unittest
 
 from app import create_app
-from app.firestore_service import get_users, get_todos
+from app.firestore_service import get_user, get_todos
 
 app = create_app()
 
@@ -36,11 +36,13 @@ def index():
 @login_required
 def hello():
     user_ip = session.get('user_ip')
-    username = session.get('username')
+    user_id = current_user.id
+    user = get_user(user_id)
+    username = user.to_dict()['username']
 
     context = {
         'user_ip': user_ip,
-        'todos': get_todos(user_id=username),
+        'todos': get_todos(user_id=user_id),
         'username': username
     }
 
