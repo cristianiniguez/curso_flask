@@ -8,25 +8,30 @@
 {% endblock %}
 
 {% block content %}
-  {% if username %}
-    <h1>
-      Bienvenido,
-      {{ username | upper }}
-    </h1>
-  {% endif %}
+  <div class="container">
+    {% if username %}
+      <h1>
+        Bienvenido,
+        {{ username | upper }}
+      </h1>
+    {% endif %}
 
-  {% if user_ip %}
-    <h3>
-      Hello World Platzi, your IP is
-      {{ user_ip }}
-    </h3>
-  {% else %}
-    <a href="{{ url_for('index') }}">Ir a inicio</a>
-  {% endif %}
+    {% if user_ip %}
+      <h3>
+        Hello World Platzi, your IP is
+        {{ user_ip }}
+      </h3>
+    {% else %}
+      <a href="{{ url_for('index') }}">Ir a inicio</a>
+    {% endif %}
 
-  <ul>
-    {% for todo in todos %}
-      {{macros.render_todo(todo)}}
-    {% endfor %}
-  </ul>
+    <h2>Crea una nueva tarea</h2>
+    {{ wtf.quick_form(todo_form) }}
+
+    <ul>
+      {% for todo in todos %}
+        {{macros.render_todo(todo)}}
+      {% endfor %}
+    </ul>
+  </div>
 {% endblock %}

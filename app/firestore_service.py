@@ -28,3 +28,9 @@ def create_user(username, password):
 
 def get_todos(user_id):
     return db.collection('user').document(user_id).collection('todo').get()
+
+
+def create_todo(user_id, description):
+    result = db.collection('user').document(user_id).collection(
+        'todo').add({'description': description})
+    return result[1]
