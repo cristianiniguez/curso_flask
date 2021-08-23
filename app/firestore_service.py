@@ -21,5 +21,10 @@ def get_user_by_name(username):
     return docs[0] if len(docs) > 0 else None
 
 
+def create_user(username, password):
+    result = db.collection('user').add({'username': username, 'password': password})
+    return result[1]
+
+
 def get_todos(user_id):
     return db.collection('user').document(user_id).collection('todo').get()

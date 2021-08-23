@@ -1,10 +1,11 @@
 from flask import render_template, flash, redirect, url_for
 from flask_login import login_user, login_required, logout_user
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from . import auth
 from app.forms import LoginForm
 from app.models import UserData, UserModel
-from app.firestore_service import get_user_by_name
+from app.firestore_service import get_user_by_name, create_user
 
 
 @auth.route('/login', methods=['GET', 'POST'])
@@ -21,7 +22,7 @@ def login():
         user_doc = get_user_by_name(username)
         if (user_doc is not None and user_doc.to_dict() is not None):
             password_from_db = user_doc.to_dict()['password']
-            if (password == password_from_db):
+            if (check_password_hash(password_from_db, password)):
                 user_data = UserData(user_doc.id, username, password)
                 user = UserModel(user_data)
                 login_user(user)
@@ -35,6 +36,32 @@ def login():
         return redirect(url_for('index'))
 
     return render_template('login.html', **context)
+
+
+@auth.route('/signup', methods=['GET', 'POST'])
+def signup():
+    signup_form = LoginForm()
+    context = {
+        'signup_form': signup_form,
+    }
+
+    if signup_form.validate_on_submit():
+        username = signup_form.username.data
+        password = signup_form.password.data
+
+        user_doc = get_user_by_name(username)
+
+        if user_doc is None:
+            password_hash = generate_password_hash(password)
+            created_user_doc = create_user(username, password_hash)
+            user_data = UserData(created_user_doc.id, username, password_hash)
+            login_user(UserModel(user_data))
+            flash('Bienvenido!')
+            return redirect(url_for('hello'))
+        else:
+            flash('Este usuario ya existe')
+
+    return render_template('signup.html', **context)
 
 
 @auth.route('/logout')
