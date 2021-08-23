@@ -32,5 +32,10 @@ def get_todos(user_id):
 
 def create_todo(user_id, description):
     result = db.collection('user').document(user_id).collection(
-        'todo').add({'description': description})
+        'todo').add({'description': description, 'done': False})
     return result[1]
+
+
+def delete_todo(user_id, todo_id):
+    todo_ref = db.document(f'user/{user_id}/todo/{todo_id}')
+    todo_ref.delete()
